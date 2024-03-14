@@ -1,42 +1,72 @@
 pipeline {
-    agent any
-    
+    agent any 
+
+    tools {
+        // Spécifiez les outils à utiliser, par exemple maven, nodejs, etc.
+        // maven 'Maven 3.6.3'
+        // nodejs 'Node 12'
+    }
+
+    environment {
+        // Définir les variables d'environnement, comme la clé API Heroku
+        HEROKU_API_KEY = credentials('heroku_api_key')
+    }
+
     stages {
+        stage('Checkout') {
+            steps {
+                // Récupération du code source
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
-                // Étape de construction (par exemple, compilation du code)
-                sh 'mvn clean package'
+                echo 'Building...'
+                // Exemple pour un projet Java avec Maven
+                // sh 'mvn clean package'
             }
         }
+
         stage('Test') {
             steps {
-                // Étape de test (par exemple, exécution des tests unitaires)
-                sh 'mvn test'
+                echo 'Testing...'
+                // Exemple pour l'exécution de tests unitaires
+                // sh 'mvn test'
             }
         }
-        stage('Deploy') {
+
+        stage('Deploy to Heroku') {
             steps {
-                // Étape de déploiement (par exemple, déploiement sur un serveur)
-                sh 'scp target/myapp.war user@server:/path/to/deployment'
+                echo 'Deploying to Heroku...'
+                script {
+                    // Commandes pour déployer sur Heroku
+                    sh 'heroku login'
+                    sh 'git push heroku master'
+                }
             }
         }
     }
-    
+
     post {
         always {
-            // Actions à effectuer toujours à la fin, quel que soit le résultat
-            // par exemple, nettoyage des ressources temporaires
-            deleteDir()
+            echo 'This will always run.'
         }
+
         success {
-            // Actions à effectuer uniquement en cas de succès du pipeline
-            // par exemple, envoyer une notification de réussite
-            echo 'Le pipeline s\'est terminé avec succès!'
+            echo 'Build succeeded!'
         }
+
         failure {
-            // Actions à effectuer uniquement en cas d'échec du pipeline
-            // par exemple, envoyer une notification d'échec
-            echo 'Le pipeline a échoué :('
+            echo 'Build failed!'
+        }
+
+        unstable {
+            echo 'Something is wrong with the build!'
+        }
+
+        changed {
+            echo 'Things were different before!'
         }
     }
 }
