@@ -1,21 +1,14 @@
 pipeline {
     agent any 
 
-    tools {
-        // Spécifiez les outils à utiliser, par exemple maven, nodejs, etc.
-        // maven 'Maven 3.6.3'
-        // nodejs 'Node 12'
-    }
-
     environment {
-        // Définir les variables d'environnement, comme la clé API Heroku
+        // Définir les variables d'environnement, par exemple pour Heroku
         HEROKU_API_KEY = credentials('heroku_api_key')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Récupération du code source
                 checkout scm
             }
         }
@@ -23,27 +16,25 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building...'
-                // Exemple pour un projet Java avec Maven
-                // sh 'mvn clean package'
+                // Remplacez cette commande par votre commande de build
+                // sh 'echo Building...'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Testing...'
-                // Exemple pour l'exécution de tests unitaires
-                // sh 'mvn test'
+                // Remplacez cette commande par votre commande de test
+                // sh 'echo Testing...'
             }
         }
 
-        stage('Deploy to Heroku') {
+        stage('Deploy') {
             steps {
-                echo 'Deploying to Heroku...'
-                script {
-                    // Commandes pour déployer sur Heroku
-                    sh 'heroku login'
-                    sh 'git push heroku master'
-                }
+                echo 'Deploying...'
+                // Remplacez cette commande par votre commande de déploiement
+                // Par exemple pour Heroku : sh 'git push heroku master'
+                // sh 'echo Deploying...'
             }
         }
     }
@@ -59,14 +50,6 @@ pipeline {
 
         failure {
             echo 'Build failed!'
-        }
-
-        unstable {
-            echo 'Something is wrong with the build!'
-        }
-
-        changed {
-            echo 'Things were different before!'
         }
     }
 }
