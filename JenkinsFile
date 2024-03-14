@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                // Étape de construction (par exemple, compilation du code)
+                sh 'mvn clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                // Étape de test (par exemple, exécution des tests unitaires)
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Étape de déploiement (par exemple, déploiement sur un serveur)
+                sh 'scp target/myapp.war user@server:/path/to/deployment'
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Actions à effectuer toujours à la fin, quel que soit le résultat
+            // par exemple, nettoyage des ressources temporaires
+            deleteDir()
+        }
+        success {
+            // Actions à effectuer uniquement en cas de succès du pipeline
+            // par exemple, envoyer une notification de réussite
+            echo 'Le pipeline s\'est terminé avec succès!'
+        }
+        failure {
+            // Actions à effectuer uniquement en cas d'échec du pipeline
+            // par exemple, envoyer une notification d'échec
+            echo 'Le pipeline a échoué :('
+        }
+    }
+}
