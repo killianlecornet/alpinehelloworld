@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        curl -u killian.lecornet@ynov.com:P4t4y4t40208 http://172.17.0.1:${PORT_EXPOSED}
+                        curl -u maildockerhub.com:MDP http://172.17.0.1:${PORT_EXPOSED}
                     '''
                 }
             }
