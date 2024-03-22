@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        curl -u emaildockerhub:tonmdpdockerhub http://172.17.0.1:${PORT_EXPOSED}
+                        curl -u killian.lecornet@ynov.com:P4t4y4t40208 http://172.17.0.1:${PORT_EXPOSED}
                     '''
                 }
             }
@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        echo $DOCKERHUB_PASSWORD_PSW | docker login -u $ID_DOCKER --password-stdin
+                        echo $DOCKERHUB_PASSWORD | docker login -u $ID_DOCKER --password-stdin
                         docker push ${ID_DOCKER}/${IMAGE_NAME}:${IMAGE_TAG}
                     '''
                 }
@@ -111,5 +111,13 @@ pipeline {
                 }
             }
         }
+    }
+    post {
+        success {
+            slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) - PROD URL => http://${PRODUCTION} , STAGING URL => http://${STAGING}")
+        }
+        failure {
+            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }   
     }
 }
